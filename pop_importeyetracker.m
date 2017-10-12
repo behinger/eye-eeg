@@ -130,17 +130,22 @@ end
 popDialog2 = false;
 try
     %% load the parsed ET data
-    if ~exist('matFileToLoad','var')
-        % if matFileToLoad is not provided, pop up dialogue
-        matFileToLoad = dlg_loadeyetracker(mfilename);
-    end;
     
-    % load parsed ET structure with data and information
-    if exist(matFileToLoad,'file')
-        fprintf('\n%s(): Loading %s...',mfilename,matFileToLoad)
-        ET = load(matFileToLoad);
+    if isstruct(matFileToLoad)
+        ET = matFileToLoad;
     else
-        return
+        if ~exist('matFileToLoad','var')
+            % if matFileToLoad is not provided, pop up dialogue
+            matFileToLoad = dlg_loadeyetracker(mfilename);
+        end;
+        
+        % load parsed ET structure with data and information
+        if exist(matFileToLoad,'file')
+            fprintf('\n%s(): Loading %s...',mfilename,matFileToLoad)
+            ET = load(matFileToLoad);
+        else
+            return
+        end
     end
     
     %% are ET events (triggers or messages containing keyword) are stored in ET.event
