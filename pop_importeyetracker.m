@@ -133,6 +133,7 @@ try
     
     if isstruct(matFileToLoad)
         ET = matFileToLoad;
+        matFileToLoad = 'struct_input';
     else
         if ~exist('matFileToLoad','var')
             % if matFileToLoad is not provided, pop up dialogue

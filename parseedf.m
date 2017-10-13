@@ -1,12 +1,21 @@
 function c = parseedf(edffile)
+% This whole file is how I interprete Olafs eyeeeg data structure, could be
+% lots o stuff wrong
 
+% find correct path
+scriptDir = which('parseedf.m');
+scriptDir = fileparts(scriptDir);
+% add edfmex
+addpath(fullfile(scriptDir,'edfmex'))
 edfdat = edfmex(edffile);
+fprintf('\n') % circumvents annoying bug in edfmex
 
 c = struct();
 c.comment = {'manual'};
 c.colheader =  {'TIME'  'L_GAZE_X'  'L_GAZE_Y'  'L_AREA'  'R_GAZE_X'  'R_GAZE_Y'  'R_AREA'  'INPUT'};
 c.data = [edfdat.FSAMPLE.time; edfdat.FSAMPLE.gx;edfdat.FSAMPLE.gy; edfdat.FSAMPLE.pa; edfdat.FSAMPLE.input]';
 c.data = permute(c.data,[1 2 4 6 3 5 7 8]);
+c.data = double(c.data);
 c.messages = {};
 
 
@@ -28,7 +37,7 @@ sac.data = [[sacdat.sttime];
             [sacdat.geny];
             sqrt([sacdat.genx].^2 + [sacdat.geny].^2);
             [sacdat.pvel];
-            ];
+            ]';
         
 sac.data = double(sac.data);
 c.eyeevent.saccades = sac;
@@ -48,7 +57,7 @@ fix.data = [[fixdat.sttime];
             [fixdat.gavx];
             [fixdat.gavy];
             [fixdat.ava];
-            ];
+            ]';
 fix.data = double(fix.data);
 c.eyeevent.fixations = fix;
     
@@ -65,7 +74,7 @@ blink.eye = tmp(blink.eye+1)';
 blink.data = [[blinkdat.sttime];
             [blinkdat.entime];
             [blinkdat.entime]-[blinkdat.sttime];
-            ];
+            ]';
 blink.data= double(blink.data);
 c.eyeevent.blinks = blink;
     
